@@ -23,9 +23,9 @@ public class VKAdapter {
 
     private final String token;
 
-    public VKAdapter(int id,String token) {
-        actor = new UserActor(id,token);
-        this.id=id;
+    public VKAdapter(int id, String token) {
+        actor = new UserActor(id, token);
+        this.id = id;
         this.token = token;
     }
 }

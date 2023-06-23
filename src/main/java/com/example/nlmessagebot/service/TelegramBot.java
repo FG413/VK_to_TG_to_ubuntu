@@ -1,11 +1,14 @@
 package com.example.nlmessagebot.service;
 
 import java.time.Instant;
-import java.util.*;
 
 import com.example.nlmessagebot.config.BotConfig;
+import com.example.nlmessagebot.model.User;
+import com.example.nlmessagebot.model.UserRepository;
 import com.vk.api.sdk.exceptions.ApiAuthException;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -20,11 +23,13 @@ import java.lang.String;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
     Message message = new Message();
     private final BotConfig config;
-
+    @Autowired
+    private UserRepository userRepository;
 
     public TelegramBot(BotConfig config) {
         this.config = config;
@@ -33,80 +38,89 @@ public class TelegramBot extends TelegramLongPollingBot {
                 new BotCommand("/set_id", "allow to set new id"),
                 new BotCommand("/set_token", "allow to set new token"),
                 new BotCommand("/help", "gives information about setting your data in bot")
-
         );
         try {
             this.execute(new SetMyCommands(listofCommands, new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+            log.error("Error occured:" + e.getMessage());
         }
     }
 
-    long chatId;
+    private final User user = new User();
 
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            chatId = update.getMessage().getChatId();
-            if (!IdMapper.idToScenario.containsKey(chatId)) {
-                IdMapper.setNewId(chatId);
-
-            }
-
-            if (IdMapper.getScenario(chatId) == 0) {
+            long chatId = update.getMessage().getChatId();
+            registerUser(update.getMessage());
+            User localUser = new User();
+            if (userRepository.findById(chatId).get().getScenario() == 0) {
                 String messageText = update.getMessage().getText();
-
                 switch (messageText) {
-                    case "/get_messages":
+                    case "/get_messages" -> {
                         try {
-                            VkData.dataReader(IdMapper.getActor(chatId));
-                            for(int count=VkData.globalListOfText.size()-1;count>-1;count--){
-                                sendMessage(chatId,"время: "+
-                                        Instant.ofEpochSecond(VkData.globalListOfDate.get(count)) + "\n" +
-                                        VkData.globalListOfName.get(count)+": \n" +
-                                        VkData.globalListOfText.get(count));
+                            VKAdapter vkAdapter = new VKAdapter(userRepository.findById(chatId).get().getVk_id(), userRepository.findById(chatId).get().getToken());
+                            VkData.dataReader(vkAdapter.getActor());
+                            for (MessageData list : VkData.sumOfList) {
+                                sendMessage(chatId, "время: " +
+                                        Instant.ofEpochSecond(list.getDate()) + "\n" +
+                                        list.getName() + ": \n" +
+                                        list.getText());
                             }
+                            log.info(VkData.sumOfList.toString());
                             VkData.dataCleaner();
                         } catch (ApiAuthException e) {
                             sendMessage(chatId, "произошла ошибка, пожалуйста введите  новые id и/или токен");
+                            log.error("Error occured:" + e.getMessage());
                         }
-                        break;
-                    case "/set_token":
+                    }
+                    case "/set_token" -> {
                         sendMessage(chatId, "Пожалуйста установите новый токен");
-                        IdMapper.setNewScenario(chatId, 1);
-                        break;
-                    case "/set_id":
+                        localUser = userRepository.findById(chatId).get();
+                        localUser.setScenario(1);
+                        userRepository.save(localUser);
+                    }
+                    case "/set_id" -> {
                         sendMessage(chatId, "Пожалуйста установите новый id");
-                        IdMapper.setNewScenario(chatId, 2);
-                        break;
-                    case "/get_mydata":
-                        sendMessage(chatId, IdMapper.getToken(chatId) + "\n" + IdMapper.getVkId(chatId));
-                        break;
-                    case "/start":
-                        sendMessage(chatId,"Привет! Этот бот позволит вам получить ваши непрочитанные сообщения из vk в telegram." +
-                                "\n" + "Для начала вам нужно сообщить боту свои vk_id и access_token с помощь комманд /set_id и /set_token." +
-                                "\n" + "Если вам непонятно как получить эти данные, возпользуйтесь командой /help" );
-                        break;
-                    case "/help":
-                        sendMessage(chatId,"Для получения vk_id зайдите на свою страницу во вконтакте, откройте свою фотографию и в ссылке на страницу скопируйте цифры находящиеся между =photo и _");
-                        sendMessage(chatId,"Для получения access_token, перейдите по ссылке: https://vkhost.github.io/, " +
+                        localUser = userRepository.findById(chatId).get();
+                        localUser.setScenario(2);
+                        userRepository.save(localUser);
+                    }
+                    case "/get_mydata" -> {
+                        sendMessage(chatId, userRepository.findById(chatId).get().getToken() + "\n" + userRepository.findById(chatId).get().getVk_id());
+                        log.info(String.valueOf(userRepository.findById(chatId).get().getChat_id()));
+                    }
+                    case "/start" -> sendMessage(chatId, """
+                            Привет! Этот бот позволит вам получить ваши непрочитанные сообщения из vk в telegram.
+                            Для начала вам нужно сообщить боту свои vk_id и access_token с помощь комманд /set_id и /set_token.
+                            Если вам непонятно как получить эти данные, возпользуйтесь командой /help""");
+                    case "/help" -> {
+                        sendMessage(chatId, "Для получения vk_id зайдите на свою страницу во вконтакте, откройте свою фотографию и в ссылке на страницу скопируйте цифры находящиеся между =photo и _");
+                        sendMessage(chatId, "Для получения access_token, перейдите по ссылке: https://vkhost.github.io/, " +
                                 "в настройках выберете сообщения и доступ в любое время, после чего нажмите получить, " +
                                 "а затем разрешить и в конце выберете из полученной страницы скопируйте последовательность между access_token= и &expires_in");
-                        break;
-                    default:
-                        sendMessage(chatId, "sorry");
+                    }
+                    default -> sendMessage(chatId, "sorry");
                 }
-            } else if (IdMapper.getScenario(chatId) == 1) {
-                IdMapper.setNewToken(chatId, update.getMessage().getText());
-                IdMapper.setNewScenario(chatId, 0);
-            } else if (IdMapper.getScenario(chatId) == 2) {
+            } else if (userRepository.findById(chatId).get().getScenario() == 1) {
+                localUser = userRepository.findById(chatId).get();
+                localUser.setToken(update.getMessage().getText());
+                localUser.setScenario(0);
+                userRepository.save(localUser);
+            } else if (userRepository.findById(chatId).get().getScenario() == 2) {
+                localUser = userRepository.findById(chatId).get();
                 try {
-                    IdMapper.setNewVkId(chatId, Integer.parseInt(update.getMessage().getText()));
+
+                    localUser.setVk_id(Integer.parseInt(update.getMessage().getText()));
+
+                    log.info("user saved:" + localUser);
                 } catch (NumberFormatException e) {
                     sendMessage(chatId, "Некорректный ввод");
                 }
-                IdMapper.setNewScenario(chatId, 0);
+
+                localUser.setScenario(0);
+                userRepository.save(localUser);
             }
         }
     }
@@ -127,7 +141,24 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+            log.error("Error occured:" + e.getMessage());
         }
     }
+
+    public void registerUser(Message message) {
+        if (userRepository.findById(message.getChatId()).isEmpty()) {
+            var chatId = message.getChatId();
+            var scenario = 0;
+            var vk_id = 0;
+            var token = "vk.q";
+            user.setChat_id(chatId);
+            user.setScenario(scenario);
+            user.setVk_id(vk_id);
+            user.setToken(token);
+            userRepository.save(user);
+            log.info("user saved:" + user);
+
+        }
+    }
+
 }
