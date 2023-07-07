@@ -1,28 +1,15 @@
 package com.example.nlmessagebot.service;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public class MessageData {
+
     private final String text;
-    private final int date;
+
     private final String name;
 
-    public MessageData(String text, String name, int date) {
-        this.text = text;
-        this.name = name;
-        this.date = date;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-    public int getDate() {
-        return date;
-    }
-
-
+    private final int date;
 }

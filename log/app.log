@@ -1,0 +1,64 @@
+2023-07-07 16:09:47,592 INFO c.e.n.NlMessageBotApplication [main] Starting NlMessageBotApplication using Java 20 with PID 13052 (C:\Users\nikit\Desktop\VK_to_TG\target\classes started by nikit in C:\Users\nikit\Desktop\VK_to_TG)
+2023-07-07 16:09:47,675 DEBUG c.e.n.NlMessageBotApplication [main] Running with Spring Boot v3.0.5, Spring v6.0.7
+2023-07-07 16:09:47,677 INFO c.e.n.NlMessageBotApplication [main] No active profile set, falling back to 1 default profile: "default"
+2023-07-07 16:09:50,617 INFO o.s.d.r.c.RepositoryConfigurationDelegate [main] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-07-07 16:09:50,936 INFO o.s.d.r.c.RepositoryConfigurationDelegate [main] Finished Spring Data repository scanning in 212 ms. Found 1 JPA repository interfaces.
+2023-07-07 16:09:52,582 INFO o.h.j.i.u.LogHelper [main] HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-07-07 16:09:52,714 INFO o.h.Version [main] HHH000412: Hibernate ORM core version 6.1.7.Final
+2023-07-07 16:09:54,692 INFO c.z.h.HikariDataSource [main] HikariPool-1 - Starting...
+2023-07-07 16:09:57,108 INFO c.z.h.p.HikariPool [main] HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4099209b
+2023-07-07 16:09:57,110 INFO c.z.h.HikariDataSource [main] HikariPool-1 - Start completed.
+2023-07-07 16:09:58,247 INFO SQL dialect [main] HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2023-07-07 16:10:04,625 INFO o.h.c.b.TypeSafeActivator [main] Error calling `jakarta.validation.Validation#buildDefaultValidatorFactory`
+jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+	at jakarta.validation.Validation$GenericBootstrapImpl.configure(Validation.java:291)
+	at jakarta.validation.Validation.buildDefaultValidatorFactory(Validation.java:103)
+	at org.hibernate.cfg.beanvalidation.TypeSafeActivator.getValidatorFactory(TypeSafeActivator.java:479)
+	at org.hibernate.cfg.beanvalidation.TypeSafeActivator.activate(TypeSafeActivator.java:82)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:578)
+	at org.hibernate.cfg.beanvalidation.BeanValidationIntegrator.integrate(BeanValidationIntegrator.java:137)
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:287)
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:415)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1423)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:376)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:352)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1816)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1766)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:598)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:520)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:326)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1132)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:907)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:584)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:310)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1304)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1293)
+	at com.example.nlmessagebot.NlMessageBotApplication.main(NlMessageBotApplication.java:11)
+2023-07-07 16:10:08,994 INFO o.h.e.t.j.p.i.JtaPlatformInitiator [main] HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-07-07 16:10:09,020 INFO o.s.o.j.LocalContainerEntityManagerFactoryBean [main] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-07-07 16:10:14,452 INFO c.e.n.NlMessageBotApplication [main] Started NlMessageBotApplication in 28.32 seconds (process running for 40.9)
+2023-07-07 16:10:43,967 INFO c.e.n.s.TelegramBot [Test_NL_MessageBot Telegram Executor] user saved:User{chatid=1491058767, scenario=0, vk_id=0, token='vk.q'}
+2023-07-07 16:10:44,464 ERROR c.v.a.s.c.ApiRequest [Test_NL_MessageBot Telegram Executor] API error
+com.vk.api.sdk.exceptions.ApiAuthException: User authorization failed (5): User authorization failed: invalid access_token (4).
+	at com.vk.api.sdk.exceptions.ExceptionMapper.parseException(ExceptionMapper.java:18)
+	at com.vk.api.sdk.client.ApiRequest.executeWithoutRetry(ApiRequest.java:104)
+	at com.vk.api.sdk.client.ApiRequest.execute(ApiRequest.java:79)
+	at com.example.nlmessagebot.service.VkDataCollector.getUnreadMessages(VkDataCollector.java:24)
+	at com.example.nlmessagebot.service.TelegramBot.onUpdateReceived(TelegramBot.java:67)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.telegram.telegrambots.meta.generics.LongPollingBot.onUpdatesReceived(LongPollingBot.java:27)
+	at org.telegram.telegrambots.updatesreceivers.DefaultBotSession$HandlerThread.run(DefaultBotSession.java:312)
+2023-07-07 16:10:44,552 ERROR c.e.n.s.TelegramBot [Test_NL_MessageBot Telegram Executor] Error occured:User authorization failed (5): User authorization failed: invalid access_token (4).
+2023-07-07 16:10:51,031 INFO c.e.n.s.TelegramBot [Test_NL_MessageBot Telegram Executor] 1491058767
+2023-07-07 16:11:02,220 INFO o.s.o.j.LocalContainerEntityManagerFactoryBean [SpringApplicationShutdownHook] Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-07-07 16:11:02,223 INFO c.z.h.HikariDataSource [SpringApplicationShutdownHook] HikariPool-1 - Shutdown initiated...
+2023-07-07 16:11:02,229 INFO c.z.h.HikariDataSource [SpringApplicationShutdownHook] HikariPool-1 - Shutdown completed.
